@@ -6,20 +6,22 @@ import {
   Switch,
   Route,
   Link,
-  useHistory
+  useHistory,
+  useParams
 } from "react-router-dom";
 
 import "react-datepicker/dist/react-datepicker.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 class App extends React.Component {
 	render() {
   	return (
-    	<div>
+    	<div className='container'>
         <Router>
         <Switch>
-          <Route path="/query" component={QueryForm} />
-          <Route path="/reporter" component={ReporterForm} />
-          <Route path="/usertype" component={UserType} />
+          <Route path="/query/:ntid" component={QueryForm} />
+          <Route path="/reporter/:ntid" component={ReporterForm} />
+          <Route path="/usertype/:ntid" component={UserType} />
           <Route path="/" component={LoginForm} />
         </Switch>
         </Router>
@@ -37,39 +39,41 @@ class LoginForm extends React.Component {
       name : this.state.name,
       password : this.state.password
     });
-    this.setState({ name: '', password: '' });
 
     if (resp.data.auth) {
       this.setState({show_error: false})
-      this.props.history.push(`/usertype`)
+      this.props.history.push(`/usertype/` + this.state.name)
     }
     else {
       this.setState({show_error: true})
+      this.setState({ name: '', password: '' });
     }
   };
 
 	render() {
   	return (
     	<form onSubmit={this.handleSubmit}>
-      <span className="formtext"><p style={{'fontWeight':'bold','fontSize':'3vw'}}>Sign In</p></span>
-      NTID:&nbsp;
-    	  <input 
+        <span className="formtext"><p style={{'fontWeight':'bold','fontSize':'3vw'}}>Sign In</p></span>
+        <label>NTID:</label>
+    	  <input className='form-control'
           type="text" 
           value={this.state.name}
           onChange={event => this.setState({ name: event.target.value})}
           placeholder="NTID" 
           required 
         /> <br/>
-        Password:&nbsp;
-        <input 
+
+        <label>Password:</label>
+        <input className='form-control'
           type="password" 
           value={this.state.password}
           onChange={event => this.setState({ password: event.target.value})}
           placeholder="Password" 
           required 
         /> <br/>
-        <button>Login</button>
-        {this.state.show_error ? <p>User not found!</p>:null}
+
+        <button className='btn btn-primary'>Login</button>
+        {this.state.show_error ? <div className='alert alert-danger'>User not found!</div>:null}
     	</form>
     );
   }
@@ -77,11 +81,13 @@ class LoginForm extends React.Component {
 
 class UserType extends React.Component {
   render() { 
+    let ntid = this.props.match.params.ntid;
+    console.log(this.props);
     return(
       <div>
-      <span className="headertext"><p style={{'fontWeight':'bold','fontSize':'3vw'}}>Select User Type</p></span>
-      <button onClick={event => this.props.history.push('/reporter')}>Reporter</button> <br/>
-      <button onClick={event => this.props.history.push('/query')}>Query</button>
+        <span className="headertext"><p style={{'fontWeight':'bold','fontSize':'3vw'}}>Select User Type</p></span>
+        <button className='btn btn-primary' onClick={event => this.props.history.push('/reporter/' + ntid)}>Reporter</button> <br/><br/>
+        <button className='btn btn-primary' onClick={event => this.props.history.push('/query/' + ntid)}>Query</button>
       </div>
     );
   }
@@ -108,9 +114,11 @@ class ReporterForm extends React.Component {
           };
 
   handleSubmit = async (event) => {
+    let ntid = this.props.match.params.ntid;
+    console.log(this.props);
     event.preventDefault();
     const resp = await axios.put('http://localhost:5000/report', {
-      reporter: this.state.reporter, 
+      reporter: ntid, 
       metricName: this.state.metricName,
       database: this.state.database,
       schema: this.state.schema,
@@ -120,7 +128,9 @@ class ReporterForm extends React.Component {
       exclusions: {'excl_bulk': this.state.excl_bulk, 
                   'excl_resi': this.state.excl_resi, 
                   'excl_courtesy': this.state.excl_courtesy},
-      geos: [this.state.ned, this.state.cen, this.state.wes],
+      geos: {'ned': this.state.ned, 
+            'cen': this.state.cen, 
+            'wes': this.state.wes},
       timeCol: this.state.timeCol,
       timeDensity: this.state.timeDensity,
       dateRange: {'start_date':this.state.startDate, 'end_date':this.state.endDate}
@@ -151,183 +161,218 @@ class ReporterForm extends React.Component {
   render() {
   	return (
     	<form onSubmit={this.handleSubmit}>
-      <span className="formtext"><p style={{'fontWeight':'bold','fontSize':'3vw'}}>Add New Metric</p></span>
-    	  Metric Name*:&nbsp;
-        <input 
+        <span className="formtext"><p style={{'fontWeight':'bold','fontSize':'3vw'}}>Add New Metric</p></span>
+    	  <label>Metric Name*:</label>
+        <input className='form-control' 
           type="text" 
           value={this.state.metricName}
           onChange={event => this.setState({ metricName: event.target.value})}
           placeholder="metric name" 
           required 
         /> <br/>
-        Database*:&nbsp;
-        <select 
+        
+        <label>Database*:</label>
+        <select className='form-control'
           value={this.state.database}
           onChange={event => this.setState({ database: event.target.value})}>
-            <option value="NDW">NDW</option>
-            <option value="MELD">MELD</option>
+          <option value="NDW">NDW</option>
+          <option value="MELD">MELD</option>
           required 
         </select> <br/>
-        Schema*:&nbsp;
-        <input 
+        
+        <label>Schema*:</label>
+        <input className='form-control'
           type="text" 
           value={this.state.schema}
           onChange={event => this.setState({ schema: event.target.value})}
           placeholder="schema" 
           required 
         /> <br/>
-        Table*:&nbsp;
-        <input 
+
+        <label>Tabke*:</label>
+        <input className='form-control'
           type="text" 
           value={this.state.table}
           onChange={event => this.setState({ table: event.target.value})}
           placeholder="table" 
           required 
         /> <br/>
-        Metric Id*:&nbsp;
-        <input 
+        
+        <label>Metric Id*:</label>
+        <input className='form-control'
           type="text" 
           value={this.state.metricId}
           onChange={event => this.setState({ metricId: event.target.value})}
           placeholder="metric Id" 
           required 
         /> <br/>      
-        Metric Column*:&nbsp;
-        <input 
+        <label>Metric Column*:</label>
+        <input className='form-control'
           type="text" 
           value={this.state.metricCol}
           onChange={event => this.setState({ metricCol: event.target.value})}
           placeholder="metric column" 
           required 
-        /> <br/><br/>
+        /> <br/>
 
-        Exclude Bulk?*&nbsp;
-        <input 
+        <label>Exclude Bulk?*:</label>&nbsp;
+        <div style={{'marginLeft':'35px'}} className='form-check form-check-inline'>
+          <input className='form-check-input'
           type="radio" 
           value="Yes"
           checked={this.state.excl_bulk === true}
-          onChange={event => this.setState({ excl_bulk: event.target.checked})}
+          onChange={event => this.setState({ excl_bulk: true})}
           required 
-        /> Yes 
-        <input 
-          type="radio" 
-          value="No"
-          checked={this.state.excl_bulk === false}
-          onChange={event => this.setState({ excl_bulk: event.target.checked})}
-          required 
-        /> No <br/>
+          /> 
+          <label className='form-check-label'>Yes</label> 
+        </div>
+        <div className='form-check form-check-inline'>
+          <input className='form-check-input'
+            type="radio" 
+            value="No"
+            checked={this.state.excl_bulk === false}
+            onChange={event => this.setState({ excl_bulk: false})}
+            required 
+          /> 
+          <label className='form-check-label'>No</label> 
+        </div><br/>
 
-        Resi?*&nbsp;
-        <input 
-          type="radio" 
-          value="Yes"
-          checked={this.state.excl_resi === true}
-          onChange={event => this.setState({ excl_resi: event.target.checked})}
-          required 
-        /> Yes 
-        <input 
-          type="radio" 
-          value="No"
-          checked={this.state.excl_resi === false}
-          onChange={event => this.setState({ excl_resi: event.target.checked})}
-          required 
-        /> No <br/> 
+        <label>Resi?*:</label>
+        <div style={{'marginLeft':'101px'}} className='form-check form-check-inline'>
+          <input className='form-check-input '
+            type="radio" 
+            value="Yes"
+            checked={this.state.excl_resi === true}
+            onChange={event => this.setState({ excl_resi: true})}
+            required 
+          /> 
+          <label className='form-check-label'>Yes</label> 
+        </div>
+        <div className='form-check form-check-inline'>
+          <input className='form-check-input'
+            type="radio" 
+            value="No"
+            checked={this.state.excl_resi === false}
+            onChange={event => this.setState({ excl_resi: false})}
+            required 
+          /> 
+          <label className='form-check-label'>No</label>
+        </div><br/>
 
-        Exclude Courtesy?*&nbsp;
-        <input 
-          type="radio" 
-          value="Yes"
-          checked={this.state.excl_courtesy === true}
-          onChange={event => this.setState({ excl_courtesy: event.target.checked})}
-          required 
-        /> Yes 
-        <input 
-          type="radio" 
-          value="No"
-          checked={this.state.excl_courtesy === false}
-          onChange={event => this.setState({ excl_courtesy: event.target.checked})}
-          required 
-        /> No <br/><br/>
+        <label>Exclude Courtesy?*:</label>&nbsp;
+        <div className='form-check form-check-inline'>
+          <input className='form-check-input'
+            type="radio" 
+            value="Yes"
+            checked={this.state.excl_courtesy === true}
+            onChange={event => this.setState({ excl_courtesy: true})}
+            required 
+          /> 
+          <label className='form-check-label'>Yes</label> 
+        </div>
+        <div className='form-check form-check-inline'>
+          <input className='form-check-input'
+            type="radio" 
+            value="No"
+            checked={this.state.excl_courtesy === false}
+            onChange={event => this.setState({ excl_courtesy: false})}
+            required 
+        /> 
+        <label className='form-check-label'>No</label>
+        </div><br/>
 
-        Divisions*&nbsp;
-        <input 
-          type="radio" 
+        <label>Divisions*:</label>&nbsp;
+        <div className='form-check form-check-inline'>
+        <input className='form-check-input'
+          type="checkbox" 
           value="NED"
           checked={this.state.ned === true}
           onChange={event => this.setState({ ned: event.target.checked})}
-          required 
-        /> NED 
-        <input 
-          type="radio" 
-          value="CEN"
-          checked={this.state.cen === false}
-          onChange={event => this.setState({ cen: event.target.checked})}
-          required 
-        /> CEN
-        <input 
-          type="radio" 
-          value="WES"
-          checked={this.state.wes === false}
-          onChange={event => this.setState({ wes: event.target.checked})}
-          required 
-        /> WES <br/><br/>
+          /> 
+          <label className='form-check-label'>NED</label>
+        </div> 
+        <div className='form-check form-check-inline'>
+          <input className='form-check-input'
+            type="checkbox" 
+            value="CEN"
+            checked={this.state.cen === true}
+            onChange={event => this.setState({ cen: event.target.checked})}
+          />
+          <label className='form-check-label'>CEN</label>
+        </div>
+        <div className='form-check form-check-inline'>
+          <input className='form-check-input'
+            type="checkbox" 
+            value="WES"
+            checked={this.state.wes === true}
+            onChange={event => this.setState({ wes: event.target.checked})}
+          /> 
+          <label className='form-check-label'>WES</label> 
+        </div><br/><br/>
 
-        Time Column*:&nbsp;
-        <input 
+        <label>Time Column*:</label>
+        <input className='form-control'
           type="text" 
           value={this.state.timeCol}
           onChange={event => this.setState({ timeCol: event.target.value})}
           placeholder="time column" 
           required 
         /><br/>
-        Time Granularity*:&nbsp;
+        <label>Time Granularity*:</label>
         <select 
           value={this.state.timeDensity}
           onChange={event => this.setState({ timeDensity: event.target.value})}>
-            <option value="D">Daily</option>
-            <option value="W">Weekly</option>
-            <option value="M">Monthly</option>
-            <option value="Y">Yearly</option>
-            <option value="DW">Day of Week</option>
+          <option value="D">Daily</option>
+          <option value="W">Weekly</option>
+          <option value="M">Monthly</option>
+          <option value="Y">Yearly</option>
+          <option value="DW">Day of Week</option>
           required 
         </select> <br/><br/>
 
-        Start Date*:&nbsp;
+        <label>Start Date*:</label>&nbsp;&nbsp;
         <DatePicker 
           selected={this.state.startDate}
           onChange={date => this.setState({ startDate: date})} /><br/>
 
-        End Date*:&nbsp;
+        <label>End Date*:</label>&nbsp;&nbsp;&nbsp;&nbsp;
         <DatePicker 
           selected={this.state.endDate}
           onChange={date => this.setState({ endDate: date})} /><br/><br/>
 
-        <button>Submit</button>
+        <button className='btn btn-primary'>Submit</button>
     	</form>
     );
   }
 }
 
 class QueryForm extends React.Component {
-  state = { metricName: '',
-            table: '',
+  state = { metricName1: '',
+            table1: '',
+            metricName2: '',
+            table2: '',
             show_error: false
           };
+  
 
   handleSubmit = async (event) => {
     event.preventDefault();
     const resp = await axios.post('http://localhost:5000/query', {
-      metricName : this.state.metricName,
-      table : this.state.table
+      metricName1 : this.state.metricName1,
+      table1 : this.state.table1,
+      metricName2 : this.state.metricName2,
+      table2 : this.state.table2
     });
 
-    this.setState({ metricName: '',
-    table: '',
-     show_error: false});
+    this.setState({ metricName1: '',
+      table1: '',
+      metricName2: '',
+      table2: '',
+      show_error: false});
 
     if (resp.data.status) {
       this.setState({show_error: false})
-      this.props.history.push(`/usertype`)
+      window.Bokeh.embed.embed_item(resp.data.plot, 'plot')
     }
     else {
       this.setState({show_error: true})
@@ -339,28 +384,57 @@ class QueryForm extends React.Component {
     
   render() {
   	return (
-    	<form onSubmit={this.handleSubmit}>
-      <span className="formtext"><p style={{'fontWeight':'bold','fontSize':'3vw'}}>Query Metrics</p></span>
-    	  Metric Name*:&nbsp;
-        <input 
-          type="text" 
-          value={this.state.metricName}
-          onChange={event => this.setState({ metricName: event.target.value})}
-          placeholder="metric name" 
-          required 
-        /> <br/>
+      <div>
+    	  <form onSubmit={this.handleSubmit}>
+        <span className="formtext"><p style={{'fontWeight':'bold','fontSize':'3vw'}}>Query Metrics</p></span>
+        <div className='row'>
+          <div className='metricInput col'> <b>Metric 1</b> <br/>
+            <label>Metric Name*:</label>
+            <input className='form-control'
+              type="text" 
+              value={this.state.metricName1}
+              onChange={event => this.setState({ metricName1: event.target.value})}
+              placeholder="metric name" 
+              required 
+            /> <br/>
 
-        Table*:&nbsp;
-        <input 
-          type="text" 
-          value={this.state.table}
-          onChange={event => this.setState({ table: event.target.value})}
-          placeholder="table" 
-          required 
-        /> <br/>
-        <button>Query</button>
-        {this.state.show_error ? <p>Metric not defined!</p>:null}
-    	</form>
+            <label>Table*:</label>
+            <input className='form-control'
+              type="text" 
+              value={this.state.table1}
+              onChange={event => this.setState({ table1: event.target.value})}
+              placeholder="table" 
+              required 
+            /> 
+          </div>
+          <div className='metricInput col'> <b>Metric 2</b> <br/>
+            <label>Metric Name*:</label>
+            <input className='form-control'
+              type="text" 
+              value={this.state.metricName2}
+              onChange={event => this.setState({ metricName2: event.target.value})}
+              placeholder="metric name" 
+              required 
+            /> <br/>
+
+            <label>Table*:</label>
+            <input className='form-control'
+              type="text" 
+              value={this.state.table2}
+              onChange={event => this.setState({ table2: event.target.value})}
+              placeholder="table" 
+              required 
+            /> 
+          </div>
+        </div> <br/>
+        
+          <button className='btn btn-primary'>Query</button>
+          {this.state.show_error ? <p>Metric not defined!</p>:null}
+    	  </form>
+        
+        <div id='plot' className='bk-root'> 
+        </div>
+      </div>
     );
   }
 }
