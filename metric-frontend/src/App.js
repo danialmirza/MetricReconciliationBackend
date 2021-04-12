@@ -189,7 +189,7 @@ class ReporterForm extends React.Component {
           required 
         /> <br/>
 
-        <label>Tabke*:</label>
+        <label>Table*:</label>
         <input className='form-control'
           type="text" 
           value={this.state.table}
@@ -431,7 +431,7 @@ class QueryForm extends React.Component {
           <button className='btn btn-primary'>Query</button>
           {this.state.show_error ? <p>Metric not defined!</p>:null}
     	  </form>
-        
+
         <div id='plot' className='bk-root'> 
         </div>
       </div>
