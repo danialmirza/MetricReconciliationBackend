@@ -43,6 +43,9 @@ class Metric(db.Document):
     metricCol = db.StringField(required=True)
     exclusions = db.DictField()
     geos = db.DictField()
+    divisionCol = db.StringField()
+    regionCol = db.StringField()
+    topGeoAgg = db.StringField(required=True, choices=('ENT', 'NED', 'WES', 'CEN', 'Other'))
     timeCol = db.StringField()
     timeDensity = db.StringField(choices=(('D', 'Day'), ('W', 'Week'), ('M', 'Month'), ('Y', 'Year'), ('DW', 'DayOfWeek')))
     dateRange = db.DictField()
@@ -81,6 +84,9 @@ def create_metric():
                     metricCol=record['metricCol'],
                     exclusions=record['exclusions'],
                     geos=record['geos'],
+                    divisionCol=record['divisionCol'],
+                    regionCol=record['regionCol'],
+                    topGeoAgg=record['topGeoAgg'],
                     timeCol=record['timeCol'],
                     timeDensity=record['timeDensity'],
                     dateRange=record['dateRange'])

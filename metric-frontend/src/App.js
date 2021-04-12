@@ -46,7 +46,6 @@ class LoginForm extends React.Component {
     }
     else {
       this.setState({show_error: true})
-      console.log(resp);
       this.setState({ name: '', password: '' });
     }
   };
@@ -108,6 +107,9 @@ class ReporterForm extends React.Component {
             ned: true,
             cen: true,
             wes: true,
+            divisionCol: '',
+            regionCol: '',
+            topGeoAgg: 'ENT',
             timeCol: '',
             timeDensity: 'D',
             startDate: '',
@@ -132,6 +134,9 @@ class ReporterForm extends React.Component {
       geos: {'ned': this.state.ned, 
             'cen': this.state.cen, 
             'wes': this.state.wes},
+      divisionCol: this.state.divisionCol,
+      regionCol: this.state.regionCol,
+      topGeoAgg: this.state.topGeoAgg,
       timeCol: this.state.timeCol,
       timeDensity: this.state.timeDensity,
       dateRange: {'start_date':this.state.startDate, 'end_date':this.state.endDate}
@@ -150,12 +155,15 @@ class ReporterForm extends React.Component {
             ned: true,
             cen: true,
             wes: true,
+            divisionCol: '',
+            regionCol: '',
+            topGeoAgg: 'ENT',
             timeCol: '',
             timeDensity: 'D',
             startDate: '',
             endDate: '' });
             
-    this.props.history.push(`/usertype`)
+    this.props.history.push(`/usertype/` + ntid)
   
   };
     
@@ -280,9 +288,9 @@ class ReporterForm extends React.Component {
             required 
         /> 
         <label className='form-check-label'>No</label>
-        </div><br/>
-
-        <label>Divisions*:</label>&nbsp;
+        </div><br/><br/>
+        
+        <label>Divisions:</label>&nbsp;
         <div className='form-check form-check-inline'>
         <input className='form-check-input'
           type="checkbox" 
@@ -309,7 +317,76 @@ class ReporterForm extends React.Component {
             onChange={event => this.setState({ wes: event.target.checked})}
           /> 
           <label className='form-check-label'>WES</label> 
-        </div><br/><br/>
+        </div> <br/>
+
+        <label>Division Column (If None, leave blank):</label>
+        <input className='form-control' 
+          type="text" 
+          value={this.state.divisionCol}
+          onChange={event => this.setState({ divisionCol: event.target.value})}
+          placeholder="division column" 
+        /> <br/>
+
+        <label>Region Column (If None, leave blank):</label>
+        <input className='form-control' 
+          type="text" 
+          value={this.state.regionCol}
+          onChange={event => this.setState({ regionCol: event.target.value})}
+          placeholder="region column" 
+        /> <br/>
+
+        <label>What is the top level geographic aggregation?*:</label>&nbsp;&nbsp;
+        <div className='form-check form-check-inline'>
+          <input className='form-check-input'
+            type="radio" 
+            value="Enterprise"
+            checked={this.state.topGeoAgg === 'ENT'}
+            onChange={event => this.setState({ topGeoAgg: 'ENT'})}
+            required 
+        /> 
+        <label className='form-check-label'>Enterprise</label>
+        </div>
+        <div className='form-check form-check-inline'>
+          <input className='form-check-input'
+            type="radio" 
+            value="NED"
+            checked={this.state.topGeoAgg === 'NED'}
+            onChange={event => this.setState({ topGeoAgg: 'NED'})}
+            required 
+          /> 
+          <label className='form-check-label'>NED</label> 
+        </div>
+        <div className='form-check form-check-inline'>
+          <input className='form-check-input'
+            type="radio" 
+            value="CEN"
+            checked={this.state.topGeoAgg === 'CEN'}
+            onChange={event => this.setState({ topGeoAgg: 'CEN'})}
+            required 
+        /> 
+        <label className='form-check-label'>CEN</label>
+        </div>
+        <div className='form-check form-check-inline'>
+          <input className='form-check-input'
+            type="radio" 
+            value="WES"
+            checked={this.state.topGeoAgg === 'WES'}
+            onChange={event => this.setState({ topGeoAgg: 'WES'})}
+            required 
+        /> 
+        <label className='form-check-label'>WES</label>
+        </div>
+        <div className='form-check form-check-inline'>
+          <input className='form-check-input'
+            type="radio" 
+            value="Other"
+            checked={this.state.topGeoAgg === 'Other'}
+            onChange={event => this.setState({ topGeoAgg: 'Other'})}
+            required 
+        /> 
+        <label className='form-check-label'>Other</label>
+        </div>
+        <br/><br/>
 
         <label>Time Column*:</label>
         <input className='form-control'
@@ -365,18 +442,16 @@ class QueryForm extends React.Component {
       table2 : this.state.table2
     });
 
-    this.setState({ metricName1: '',
-      table1: '',
-      metricName2: '',
-      table2: '',
-      show_error: false});
-
     if (resp.data.status) {
       this.setState({show_error: false})
       window.Bokeh.embed.embed_item(resp.data.plot, 'plot')
     }
     else {
-      this.setState({show_error: true})
+      this.setState({ metricName1: '',
+      table1: '',
+      metricName2: '',
+      table2: '',
+      show_error: true});
     }
 
     console.log(resp)
