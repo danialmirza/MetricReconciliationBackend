@@ -36,6 +36,7 @@ class User(db.Document):
 class Metric(db.Document):
     reporter = db.ReferenceField(User)
     metricName = db.StringField(required=True)
+    source = db.StringField(required=True)
     database = db.StringField(required=True, choices=('NDW', 'MELD'))
     schema = db.StringField(required=True)
     table = db.StringField(required=True)
@@ -77,6 +78,7 @@ def create_metric():
     record = json.loads(request.data)
     metric = Metric(reporter=record['reporter'],
                     metricName=record['metricName'],
+                    source=record['source'],
                     database=record['database'],
                     schema=record['schema'],
                     table=record['table'],

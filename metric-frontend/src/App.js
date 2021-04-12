@@ -96,6 +96,7 @@ class UserType extends React.Component {
 class ReporterForm extends React.Component {
   state = { reporter: '', 
             metricName: '',
+            source: '',
             database: 'NDW',
             schema: '',
             table: '',
@@ -123,6 +124,7 @@ class ReporterForm extends React.Component {
     const resp = await axios.put('http://localhost:5000/report', {
       reporter: ntid, 
       metricName: this.state.metricName,
+      source: this.state.source,
       database: this.state.database,
       schema: this.state.schema,
       table: this.state.table,
@@ -144,6 +146,7 @@ class ReporterForm extends React.Component {
 
     this.setState({ reporter: '', 
             metricName: '',
+            source: '',
             database: 'NDW',
             schema: '',
             table: '',
@@ -177,6 +180,15 @@ class ReporterForm extends React.Component {
           value={this.state.metricName}
           onChange={event => this.setState({ metricName: event.target.value})}
           placeholder="metric name" 
+          required 
+        /> <br/>
+
+        <label>Source (upstream e.g. NSD)*:</label>
+        <input className='form-control' 
+          type="text" 
+          value={this.state.metricName}
+          onChange={event => this.setState({ source: event.target.value})}
+          placeholder="source" 
           required 
         /> <br/>
         
