@@ -46,6 +46,7 @@ class LoginForm extends React.Component {
     }
     else {
       this.setState({show_error: true})
+      console.log(resp);
       this.setState({ name: '', password: '' });
     }
   };

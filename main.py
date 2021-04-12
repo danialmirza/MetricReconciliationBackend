@@ -18,9 +18,9 @@ from numpy import cos, linspace
 app = Flask(__name__)
 CORS(app)
 
-f = open("mongo-uri.txt", "r")
-mongoURI = f.readline()[0]
-app.config["MONGODB_HOST"] = mongoURI
+#f = open("mongo-uri.txt", "r")
+#mongoURI = f.readline()[0]
+app.config["MONGODB_HOST"] = "mongodb+srv://admin:" + urllib.parse.quote('[P@ssw0rd]') + "@cluster0.872hs.mongodb.net/test"
 
 db = MongoEngine()
 db.init_app(app)
