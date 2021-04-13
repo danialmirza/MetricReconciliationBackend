@@ -35,4 +35,4 @@ finally:
     cur.close()
     conn.close()
 
-# TODO: transform rows into desired data structure to be stored in mongodb
+# TODO: return rows to react application for visuals
