@@ -1,4 +1,5 @@
 import prestodb
+from getpass import getpass
 # import query_builder
 
 
@@ -12,13 +13,14 @@ def get_presto_conn(host, port, user, catalog, schema):
     )
     return conn
 
-# TODO: provide presto db configurations
 conn = get_presto_conn(
-    host='localhost',
-    port=8080,
-    user='test_user',
+    host='query.comcast.com',
+    port=4443,
+    user='dmirza509',
     catalog='test_catalog',
     schema='test_schema',
+    http_scheme='https',
+    auth=prestodb.auth.BasicAuthentication("dmirza509", getpass("password:"))
     )
 cur = conn.cursor()
 
