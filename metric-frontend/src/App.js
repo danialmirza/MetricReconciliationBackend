@@ -186,7 +186,7 @@ class ReporterForm extends React.Component {
         <label>Source (upstream e.g. NSD)*:</label>
         <input className='form-control' 
           type="text" 
-          value={this.state.metricName}
+          value={this.state.source}
           onChange={event => this.setState({ source: event.target.value})}
           placeholder="source" 
           required 
