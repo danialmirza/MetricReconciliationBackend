@@ -18,7 +18,7 @@ user_credentials = {
 }
 
 
-class enhancedAuth(presto.auth.BasicAuthentication):
+class enhancedAuth(prestodb.auth.BasicAuthentication):
     def __init__(
         self,
         username,
