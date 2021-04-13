@@ -5,8 +5,8 @@ from flask import Flask, request, jsonify
 from flask_mongoengine import MongoEngine
 from flask_cors import CORS
 
-from plotting import plot1
-
+from plotting import plot_metric_by_day, metric_comparison
+import pandas as pd
 app = Flask(__name__)
 CORS(app)
 
@@ -108,10 +108,17 @@ def query_metric():
         return jsonify({'error': 'metric not defined',
                         'status': False})
     else:
+        df1 = pd.read_csv('sample_data/attr_metrics_mart_202103.csv')
+        df2 = pd.read_csv('sample_data/attr_all_west_202103.csv')
         return jsonify({'status': True,
                         'metadata1': metric1,
                         'metadata2': metric2,
-                        'plot': plot1()})
+                        'metricTable': metric_comparison(metric1, metric2),
+                        'plot': plot_metric_by_day('Average Time to Repair', df1, metric1.metricName,
+                                                   metric1.metricNumer, metric1.metricDenom,
+                                                   metric1.timeCol, df2, metric2.metricName,
+                                                   metric2.metricNumer, metric2.metricDenom,
+                                                   metric2.timeCol, metric1.topGeoAgg, metric2.topGeoAgg)})
 
 if __name__ == "__main__":
     app.run(debug=True)

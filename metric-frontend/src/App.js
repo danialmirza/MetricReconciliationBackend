@@ -562,6 +562,7 @@ class QueryForm extends React.Component {
 
     if (resp.data.status) {
       this.setState({show_error: false})
+      window.Bokeh.embed.embed_item(resp.data.metricTable, 'metricTable')
       window.Bokeh.embed.embed_item(resp.data.plot, 'plot')
     }
     else {
@@ -626,6 +627,7 @@ class QueryForm extends React.Component {
           {this.state.show_error ? <p>Metric not defined!</p>:null}
     	  </form>
 
+        <div id='metricTable' className='bk-root'></div>
         <div id='plot' className='bk-root'> 
         </div>
       </div>
