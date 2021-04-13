@@ -7,3 +7,4 @@ six==1.15.0
 toml==0.10.2
 wrapt==1.12.1
 presto-python-client==0.7.0
+black==20.8b1
