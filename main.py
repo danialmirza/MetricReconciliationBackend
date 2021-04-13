@@ -5,15 +5,6 @@ from flask import Flask, request, jsonify
 from flask_mongoengine import MongoEngine
 from flask_cors import CORS
 
-import bokeh
-from bokeh.plotting import Figure
-from bokeh.resources import CDN
-from bokeh.embed import json_item
-from bokeh.layouts import column
-from bokeh.models import CustomJS, ColumnDataSource, Slider
-from bokeh.sampledata.autompg import autompg
-
-from numpy import cos, linspace
 from plotting import plot1
 
 app = Flask(__name__)

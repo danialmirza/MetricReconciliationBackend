@@ -1,3 +1,13 @@
+import bokeh
+from bokeh.plotting import Figure
+from bokeh.resources import CDN
+from bokeh.embed import json_item
+from bokeh.layouts import column
+from bokeh.models import CustomJS, ColumnDataSource, Slider
+from bokeh.sampledata.autompg import autompg
+
+from numpy import cos, linspace
+
 def plot1():
     # copy/pasted from Bokeh Getting Started Guide
     x = linspace(-6, 6, 100)
