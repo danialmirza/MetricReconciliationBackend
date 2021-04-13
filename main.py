@@ -29,11 +29,15 @@ class Metric(db.Document):
     reporter = db.ReferenceField(User)
     metricName = db.StringField(required=True)
     source = db.StringField(required=True)
+    description = db.StringField(required=True)
+    organisation = db.StringField(required=True)
     database = db.StringField(required=True, choices=('NDW', 'MELD'))
     schema = db.StringField(required=True)
     table = db.StringField(required=True)
     metricId = db.StringField(required=True)
     metricCol = db.StringField(required=True)
+    metricNumer = db.StringField(required=True)
+    metricDenom = db.StringField()
     exclusions = db.DictField()
     geos = db.DictField()
     divisionCol = db.StringField()
@@ -71,11 +75,15 @@ def create_metric():
     metric = Metric(reporter=record['reporter'],
                     metricName=record['metricName'],
                     source=record['source'],
+                    description=record['description'],
+                    organisation=record['organisation'],
                     database=record['database'],
                     schema=record['schema'],
                     table=record['table'],
                     metricId=record['metricId'],
                     metricCol=record['metricCol'],
+                    metricNumer=record['metricNumer'],
+                    metricDenom=record['metricDenom'],
                     exclusions=record['exclusions'],
                     geos=record['geos'],
                     divisionCol=record['divisionCol'],

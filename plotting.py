@@ -3,7 +3,7 @@ from bokeh.plotting import Figure
 from bokeh.resources import CDN
 from bokeh.embed import json_item
 from bokeh.layouts import column
-from bokeh.models import CustomJS, ColumnDataSource, Slider
+from bokeh.models import CustomJS, ColumnDataSource, Slider, Div, RangeSlider, DateRangeSlider, Spinner
 from bokeh.sampledata.autompg import autompg
 
 from numpy import cos, linspace
