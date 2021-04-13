@@ -97,14 +97,21 @@ class ReporterForm extends React.Component {
   state = { reporter: '', 
             metricName: '',
             source: '',
+            description: '',
+            organisation: '',
             database: 'NDW',
             schema: '',
             table: '',
             metricId: '',
             metricCol: '',
+            metricNumer: '',
+            metricDenom: '',
             excl_bulk: false,
             excl_resi: true,
             excl_courtesy: false,
+            excl_ie: false,
+            excl_prepaid: false,
+            excl_other: '',
             ned: true,
             cen: true,
             wes: true,
@@ -125,14 +132,20 @@ class ReporterForm extends React.Component {
       reporter: ntid, 
       metricName: this.state.metricName,
       source: this.state.source,
+      description: this.state.description,
+      organisation: this.state.organisation,
       database: this.state.database,
       schema: this.state.schema,
       table: this.state.table,
       metricId: this.state.metricId,
       metricCol: this.state.metricCol,
+      metricNumer: this.state.metricNumer,
+      metricDenom: this.state.metricDenom,
       exclusions: {'excl_bulk': this.state.excl_bulk, 
                   'excl_resi': this.state.excl_resi, 
-                  'excl_courtesy': this.state.excl_courtesy},
+                  'excl_courtesy': this.state.excl_courtesy,
+                  'excl_ie': this.state.excl_ie,
+                  'excl_prepaid': this.state.excl_prepaid},
       geos: {'ned': this.state.ned, 
             'cen': this.state.cen, 
             'wes': this.state.wes},
@@ -147,14 +160,21 @@ class ReporterForm extends React.Component {
     this.setState({ reporter: '', 
             metricName: '',
             source: '',
+            description: '',
+            organisation: '',
             database: 'NDW',
             schema: '',
             table: '',
             metricId: '',
             metricCol: '',
+            metricNumer: '',
+            metricDenom: '',
             excl_bulk: false,
             excl_resi: true,
             excl_courtesy: false,
+            excl_ie: false,
+            excl_prepaid: false,
+            excl_other: '',
             ned: true,
             cen: true,
             wes: true,
@@ -189,6 +209,24 @@ class ReporterForm extends React.Component {
           value={this.state.source}
           onChange={event => this.setState({ source: event.target.value})}
           placeholder="source" 
+          required 
+        /> <br/>
+
+      <label>Description (brief description of metric)*:</label>
+        <input className='form-control' 
+          type="text" 
+          value={this.state.description}
+          onChange={event => this.setState({ description: event.target.value})}
+          placeholder="description" 
+          required 
+        /> <br/>
+
+      <label>Organisation (who owns this metric?)*:</label>
+        <input className='form-control' 
+          type="text" 
+          value={this.state.organisation}
+          onChange={event => this.setState({ organisation: event.target.value})}
+          placeholder="organisation" 
           required 
         /> <br/>
         
@@ -234,6 +272,21 @@ class ReporterForm extends React.Component {
           onChange={event => this.setState({ metricCol: event.target.value})}
           placeholder="metric column" 
           required 
+        /> <br/>
+        <label>Metric Numerator*:</label>
+        <input className='form-control'
+          type="text" 
+          value={this.state.metricNumer}
+          onChange={event => this.setState({ metricNumer: event.target.value})}
+          placeholder="metric numerator" 
+          required 
+        /> <br/>
+        <label>Metric Denominator (If None, leave blank):</label>
+        <input className='form-control'
+          type="text" 
+          value={this.state.metricDenom}
+          onChange={event => this.setState({ metricDenom: event.target.value})}
+          placeholder="metric denominator" 
         /> <br/>
 
         <label>Exclude Bulk?*:</label>&nbsp;
@@ -300,7 +353,60 @@ class ReporterForm extends React.Component {
             required 
         /> 
         <label className='form-check-label'>No</label>
-        </div><br/><br/>
+        </div><br/>
+        
+        <label>Exclude Internet Essentials?*:</label>&nbsp;
+        <div className='form-check form-check-inline'>
+          <input className='form-check-input'
+            type="radio" 
+            value="Yes"
+            checked={this.state.excl_ie === true}
+            onChange={event => this.setState({ excl_ie: true})}
+            required 
+          /> 
+          <label className='form-check-label'>Yes</label> 
+        </div>
+        <div className='form-check form-check-inline'>
+          <input className='form-check-input'
+            type="radio" 
+            value="No"
+            checked={this.state.excl_ie === false}
+            onChange={event => this.setState({ excl_ie: false})}
+            required 
+        /> 
+        <label className='form-check-label'>No</label>
+        </div><br/>
+
+        <label>Exclude Prepaid?*:</label>&nbsp;
+        <div className='form-check form-check-inline'>
+          <input className='form-check-input'
+            type="radio" 
+            value="Yes"
+            checked={this.state.excl_prepaid === true}
+            onChange={event => this.setState({ excl_prepaid: true})}
+            required 
+          /> 
+          <label className='form-check-label'>Yes</label> 
+        </div>
+        <div className='form-check form-check-inline'>
+          <input className='form-check-input'
+            type="radio" 
+            value="No"
+            checked={this.state.excl_prepaid === false}
+            onChange={event => this.setState({ excl_prepaid: false})}
+            required 
+        /> 
+        <label className='form-check-label'>No</label>
+        </div><br/>
+
+        <label>Other Exclusions (please write in the form exclusion_name:true/false e.g. to exclude sidegrades, excl_sidegrade: true. For multiple exclusions, separate each with a comma.):</label>&nbsp;
+        <input className='form-control'
+          type="text" 
+          value={this.state.excl_other}
+          onChange={event => this.setState({ excl_other: event.target.value})}
+          placeholder="other exclusions" 
+        />
+        <br/><br/>
         
         <label>Divisions:</label>&nbsp;
         <div className='form-check form-check-inline'>
