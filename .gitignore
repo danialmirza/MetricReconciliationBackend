@@ -1,2 +1,4 @@
 mongo-uri.txt
 .DS_Store
+/venv/*
+*.pem
